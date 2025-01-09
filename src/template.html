@@ -25,27 +25,30 @@
         </ul>
     </div>
     <div id="tab">
-        <button id="new-task">Add New Task</button>
+        <button id="add-task">Add New Task</button>
+        <div id="task-list"></div>
     </div>
 
-    <dialog>
+    <dialog id="task-modal">
         <form action="">
-                <label for="title">Title</label>
-                <input type="text" id="title" name="title" required autofocus>
-            
-                <label for="description">Description</label>
-                <textarea id="description" name="description" rows="5" cols="33"></textarea>
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" required autofocus>
 
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="5" cols="33"></textarea>
+
+            <label for="due">Due Date</label>
+            <input type="date" id="due" name="due" required>
+
+             <div>Priority</div>
             <select name="priority" id="set-priority">
-                <option value="">Set a priority</option>
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
             </select>
 
-
+             <div>Project</div>
             <select name="project" id="set-project">
-                <option value="">Project</option>
                 <option value="personal">Personal</option>
                 <option value="work">Work</option>
                 <option value="groceries">Groceries</option>
