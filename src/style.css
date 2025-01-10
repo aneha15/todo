@@ -21,6 +21,7 @@ ul {
     display: flex;
     flex-direction: column;
     gap: 45px;
+    min-width: 300px;
 }
 
 #taskpage {
@@ -45,7 +46,6 @@ ul {
         gap: 18px;
         padding: 30px;
         font-size: 16px;
-        height: auto;
 
         input,
         textarea,
@@ -59,6 +59,25 @@ ul {
         label,
         button {
             height: 30px;
+            font-size: inherit;
+        }
+    }
+}
+
+
+#project-modal {
+    margin: 10px 25px;
+    position: absolute;
+    width: 250px;
+    border: 1px solid gray;
+
+    form {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        input {
+            margin-bottom: 15px;
+            height: 25px;
             font-size: inherit;
         }
     }

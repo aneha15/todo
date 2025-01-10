@@ -22,6 +22,16 @@
             <li id="work-tab">Work</li>
             <li id="groceries-tab">Groceries</li>
             <button id="add-project">+ Add new project</button>
+
+            <div id="project-modal-wrapper">
+                <dialog id="project-modal" open>
+                    <form id="project-form" action="">
+                        <label for="new-project">Name</label>
+                        <input type="text" id="new-project" name="new-project" autofocus>
+                        <button>Submit</button>
+                    </form>
+                </dialog>
+            </div>
         </ul>
     </div>
     <div id="taskpage">
@@ -30,7 +40,7 @@
     </div>
 
     <dialog id="task-modal">
-        <form action="">
+        <form id="task-form" action="">
             <label for="title">Title</label>
             <input type="text" id="title" name="title" required autofocus>
 
@@ -58,13 +68,7 @@
         </form>
     </dialog>
 
-    <dialog id="project-modal">
-        <form action="">
-            <label for="new-project">Name</label>
-            <input type="text" id="new-project" name="new-project" autofocus>
-            <button>Submit</button>
-        </form>
-    </dialog>
+
 </body>
 
 </html>
