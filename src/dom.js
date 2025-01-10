@@ -1,17 +1,16 @@
 import Task from './task.js';
 import Project from './project.js';
-import { projectList } from './project.js';
-
+import { projectList, addToProjectList } from './project.js';
 
 export default function addNewTask() {
-    const form = document.querySelector('form');
-    const dialog = document.querySelector('dialog');
+    addNewProject();
+    const form = document.querySelector('#task-form');
+    const dialog = document.querySelector('#task-modal');
     const addTask = document.querySelector('#add-task');
-    const taskModal = document.querySelector('#task-modal');
     const submitBtn = document.querySelector('#submit');
 
     addTask.addEventListener('click', () => {
-        taskModal.showModal();
+        dialog.showModal();
     });
 
     submitBtn.addEventListener('click', (event) => {
@@ -24,7 +23,9 @@ export default function addNewTask() {
 
         if (title) {
             const task = new Task(title, description, date, priority);
+          
             const project = projectList[projectName];
+            console.log(project);
             project.push(task);
 
             tabSwitch();
@@ -73,5 +74,44 @@ function tabSwitch() {
 }
 
 function addNewProject() {
+    const projectTabs = document.querySelector('#projects');
+    const addBtn = document.querySelector('#add-project');
+    const dialog = document.querySelector('#project-modal');
+    const wrapper = document.querySelector('#project-modal-wrapper');
+    const form = document.querySelector('#project-form');
+    const enterBtn = document.querySelector('#enter');
+    const projectDropdown = document.querySelector('#set-project');
+
+    addBtn.addEventListener('click', () => {
+        dialog.style.left = wrapper.offsetLeft + 'px';
+        dialog.style.top = wrapper.offsetTop + 'px';
+        dialog.showModal();
+    });
+
+    enterBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        const name = document.querySelector('#new-project').value;
+
+        if (name) {
+            const newProject = document.createElement('li');
+            newProject.id = `${name}-tab`;
+            newProject.textContent = String(name).charAt(0).toUpperCase() + String(name).slice(1);
+            projectTabs.insertBefore(newProject, addBtn);
+
+            const option = document.createElement('option');
+            option.value = name;
+            option.textContent = newProject.textContent;
+            projectDropdown.appendChild(option);
+
+           addToProjectList(name);
+           
+            form.reset();
+            dialog.close();
+        }
+    });
+
+
+
+
 
 }

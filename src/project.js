@@ -12,6 +12,7 @@ export const projectList = {
     groceries: [],
 };
 
-function addToProjectList(name) {
-    projectList.push(name);
+export function addToProjectList(name) {
+    projectList[name] = [];
+    // console.log(projectList);
 }
