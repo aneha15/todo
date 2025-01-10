@@ -22,32 +22,40 @@ export default function addNewTask() {
         const projectName = document.querySelector('#set-project').value;
         const date = document.querySelector('#due').value;
 
-        const task = new Task(title, description, date, priority, projectName);
+        const task = new Task(title, description, date, priority);
+        const project = projectList[projectName];
 
-
-        projectList[projectName].push(task);
-        // renderTask(task);
-       // console.log(projectList);
+        project.push(task);
+         renderTask(project);
+        //  console.log(task);
+        // console.log(project);
+        //  console.log(projectList);
 
         form.reset();
         dialog.close();
     });
 }
 
-function renderTask({ title, priority }) {
+function renderTask(project) {
     const taskList = document.querySelector('#task-list');
-    const addedTask = document.createElement('div');
-    const titleEle = document.createElement('div');
-    const priorityEle = document.createElement('button');
+    taskList.textContent = '';
 
-    addedTask.style.cssText = 'display: flex; justify-content: space-between; padding: 25px;';
-    priorityEle.style.backgroundColor = 'pink';
+    project.forEach((task) => {
+        console.log(task);
+        const addedTask = document.createElement('div');
+        const titleEle = document.createElement('div');
+        const priorityEle = document.createElement('button');
 
-    titleEle.textContent = title;
-    priorityEle.textContent = priority;
 
-    addedTask.appendChild(titleEle);
-    addedTask.appendChild(priorityEle);
-    taskList.appendChild(addedTask);
+        addedTask.style.cssText = 'display: flex; justify-content: space-between; padding: 25px;';
+        priorityEle.style.backgroundColor = 'pink';
+
+        titleEle.textContent = task.title;
+        priorityEle.textContent = task.priority;
+
+        addedTask.appendChild(titleEle);
+        addedTask.appendChild(priorityEle);
+        taskList.appendChild(addedTask);
+    });
 }
 
