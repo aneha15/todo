@@ -26,11 +26,8 @@ export default function addNewTask() {
         const project = projectList[projectName];
 
         project.push(task);
-         renderTask(project);
-        //  console.log(task);
-        // console.log(project);
-        //  console.log(projectList);
 
+        tabSwitch();
         form.reset();
         dialog.close();
     });
@@ -41,11 +38,9 @@ function renderTask(project) {
     taskList.textContent = '';
 
     project.forEach((task) => {
-        console.log(task);
         const addedTask = document.createElement('div');
         const titleEle = document.createElement('div');
         const priorityEle = document.createElement('button');
-
 
         addedTask.style.cssText = 'display: flex; justify-content: space-between; padding: 25px;';
         priorityEle.style.backgroundColor = 'pink';
@@ -59,3 +54,19 @@ function renderTask(project) {
     });
 }
 
+function tabSwitch() {
+
+    Object.keys(projectList).forEach(key => {
+
+        const id = `${key}-tab`;
+        const tab = document.getElementById(id);
+
+        tab.addEventListener('click', () => {
+            const taskList = document.querySelector('#task-list');
+            const heading = document.createElement('h2');
+            heading.textContent = `${key}`;
+            renderTask(projectList[key]);
+            taskList.insertBefore(heading, taskList.firstChild);
+        });
+    });
+}
