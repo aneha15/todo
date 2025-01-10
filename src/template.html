@@ -18,13 +18,13 @@
 
         <ul id="projects">
             <h3>PROJECTS</h3>
-            <li>Personal</li>
-            <li>Work</li>
-            <li>Groceries</li>
+            <li id="personal-tab">Personal</li>
+            <li id="work-tab">Work</li>
+            <li id="groceries-tab">Groceries</li>
             <button id="add-project">+ Add new project</button>
         </ul>
     </div>
-    <div id="tab">
+    <div id="taskpage">
         <button id="add-task">Add New Task</button>
         <div id="task-list"></div>
     </div>
@@ -40,20 +40,29 @@
             <label for="due">Due Date</label>
             <input type="date" id="due" name="due" required>
 
-             <div>Priority</div>
+            <div>Priority</div>
             <select name="priority" id="set-priority">
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
             </select>
 
-             <div>Project</div>
+            <div>Project</div>
             <select name="project" id="set-project">
                 <option value="personal">Personal</option>
                 <option value="work">Work</option>
                 <option value="groceries">Groceries</option>
             </select>
+            <button value="cancel" formmethod="dialog" formnovalidate>Cancel</button>
             <button id="submit">Submit</button>
+        </form>
+    </dialog>
+
+    <dialog id="project-modal">
+        <form action="">
+            <label for="new-project">Name</label>
+            <input type="text" id="new-project" name="new-project" autofocus>
+            <button>Submit</button>
         </form>
     </dialog>
 </body>

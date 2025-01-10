@@ -22,14 +22,15 @@ export default function addNewTask() {
         const projectName = document.querySelector('#set-project').value;
         const date = document.querySelector('#due').value;
 
-        const task = new Task(title, description, date, priority);
-        const project = projectList[projectName];
+        if (title) {
+            const task = new Task(title, description, date, priority);
+            const project = projectList[projectName];
+            project.push(task);
 
-        project.push(task);
-
-        tabSwitch();
-        form.reset();
-        dialog.close();
+            tabSwitch();
+            form.reset();
+            dialog.close();
+        }
     });
 }
 
@@ -69,4 +70,8 @@ function tabSwitch() {
             taskList.insertBefore(heading, taskList.firstChild);
         });
     });
+}
+
+function addNewProject() {
+
 }
