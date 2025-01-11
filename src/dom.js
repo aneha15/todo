@@ -9,7 +9,9 @@ export default function addNewTask() {
     const addTask = document.querySelector('#add-task');
     const submitBtn = document.querySelector('#submit');
 
+
     addTask.addEventListener('click', () => {
+        submitBtn.textContent = 'Submit';
         dialog.showModal();
     });
 
@@ -21,12 +23,41 @@ export default function addNewTask() {
         const projectName = document.querySelector('#set-project').value;
         const date = document.querySelector('#due').value;
 
+        // const titles = [];
+        // Object.keys(projectList).forEach(proj => {
+        //     projectList[proj].forEach(task => {
+        //         titles.push(task.title);
+        //     });
+        // });
+
+        // console.log(titles);
+
+        //  const addedTask = titles.some((x) => x == title);
+
+        // console.log(addedTask);
+
         if (title) {
+            // if (addedTask) {
+            //     const taskIndex = titles.findIndex((x) => x == title);
+            // console.log(taskIndex);
+
+            // editing task content in task list
+            // projectList[projectName][taskIndex].title = title;
+            // projectList[projectName][taskIndex].description = description;
+            // projectList[projectName][taskIndex].priority = priority;
+            // projectList[projectName][taskIndex].dueDate = date;
+            // projectList[projectName][taskIndex].project = projectName;
+
+            // console.log(projectList[projectName][taskIndex]);
+
+
+            // } else {
             const task = new Task(title, description, date, priority, projectName);
 
             const project = projectList[projectName];
 
             project.push(task);
+            // }
 
             tabSwitch();
             form.reset();
@@ -38,7 +69,7 @@ export default function addNewTask() {
 function renderTask(projectArr) {
     const taskList = document.querySelector('#task-list');
     taskList.textContent = '';
-   
+
     projectArr.forEach((task, index) => {
         const addedTask = document.createElement('div');
         const titleEle = document.createElement('div');
@@ -47,35 +78,8 @@ function renderTask(projectArr) {
         addedTask.setAttribute('data', index);
 
         const projectName = projectArr[0].project;
-        
-        addedTask.addEventListener('click', function (e) {
-            const dialog = document.querySelector('#task-modal');
-            const form = document.querySelector('#task-form');
-            const taskIndex = index;
 
-            const titleEl = document.querySelector('#title');
-            const descriptionEl = document.querySelector('#description');
-            const priorityEl = document.querySelector('#set-priority');
-            const projectEl = document.querySelector('#set-project');
-            const dateEl = document.querySelector('#due');
-
-            const task = projectList[projectName][taskIndex];
-   
-
-            const titleText = task.title;
-            const descriptionText = task.description;
-            const priorityText = task.priority;
-            const projectText = task.project;
-            const dateText = task.dueDate;
-
-            titleEl.value = titleText;
-            descriptionEl.value = descriptionText;
-            priorityEl.value = priorityText;
-            projectEl.value = projectText;
-            dateEl.value = dateText;
-
-            dialog.showModal();
-        });
+        addedTask.addEventListener('click', () => expandTask(projectName, index));
 
         addedTask.style.cssText = 'display: flex; justify-content: space-between; padding: 25px;';
         priorityEle.style.backgroundColor = 'pink';
@@ -89,18 +93,45 @@ function renderTask(projectArr) {
     });
 }
 
-// function expandTask(event, projectName) {
-//     const dialog = document.querySelector('#task-modal');
-//     const form = document.querySelector('#task-form');
-//     const taskIndex = event.target.data;
+function expandTask(projectName, index) {
+    const dialog = document.querySelector('#task-modal');
+    const form = document.querySelector('#task-form');
+    const editBtn = document.querySelector('#submit');
+    editBtn.textContent = 'Edit task';
 
-//     console.log(taskIndex);
-//     console.log(projectList[projectName]);
+    const taskIndex = index;
 
-//    const titleText = projectList[projectName][taskIndex][title];
-//    console.log(titleText);
-//     dialog.showModal();
-// }
+    const titleEl = document.querySelector('#title');
+    const descriptionEl = document.querySelector('#description');
+    const priorityEl = document.querySelector('#set-priority');
+    const projectEl = document.querySelector('#set-project');
+    const dateEl = document.querySelector('#due');
+
+    const task = projectList[projectName][taskIndex];
+
+
+    const titleText = task.title;
+    const descriptionText = task.description;
+    const priorityText = task.priority;
+    const projectText = task.project;
+    const dateText = task.dueDate;
+
+    titleEl.value = titleText;
+    descriptionEl.value = descriptionText;
+    priorityEl.value = priorityText;
+    projectEl.value = projectText;
+    dateEl.value = dateText;
+
+    dialog.showModal();
+    editBtn.addEventListener('click', () => editTask());
+}
+
+function editTask() {
+    const form = document.querySelector('#task-form');
+    const dialog = document.querySelector('#task-modal');
+    const addTask = document.querySelector('#add-task');
+    const submitBtn = document.querySelector('#submit');
+}
 
 function tabSwitch() {
 
@@ -109,15 +140,20 @@ function tabSwitch() {
         const id = `${key}-tab`;
         const tab = document.getElementById(id);
 
-        tab.addEventListener('click', () => {
-            const taskList = document.querySelector('#task-list');
-            const heading = document.createElement('h2');
-            heading.textContent = `${key}`;
-            renderTask(projectList[key]);
-            taskList.insertBefore(heading, taskList.firstChild);
-        });
+        tab.addEventListener('click', () => displayTabContent(key));
     });
 }
+
+function displayTabContent(key) {
+    const taskList = document.querySelector('#task-list');
+    const heading = document.createElement('h2');
+    heading.textContent = `${key}`;
+    renderTask(projectList[key]);
+    taskList.insertBefore(heading, taskList.firstChild);
+    // console.log(projectList);
+}
+
+displayTabContent('personal');
 
 function addNewProject() {
     const projectTabs = document.querySelector('#projects');

@@ -24,11 +24,12 @@
             <button id="add-project">+ Add new project</button>
 
             <div id="project-modal-wrapper">
-                <dialog id="project-modal" open>
+                <dialog id="project-modal">
                     <form id="project-form" action="">
                         <label for="new-project">Name</label>
                         <input type="text" id="new-project" name="new-project" autofocus>
-                        <button>Submit</button>
+                        <button id="enter">Enter</button>
+                        <button value="cancel" formmethod="dialog" formnovalidate>Cancel</button>
                     </form>
                 </dialog>
             </div>
@@ -64,7 +65,7 @@
                 <option value="groceries">Groceries</option>
             </select>
             <button value="cancel" formmethod="dialog" formnovalidate>Cancel</button>
-            <button id="submit">Submit</button>
+            <button id="submit"></button>
         </form>
     </dialog>
 
