@@ -22,10 +22,10 @@ export default function addNewTask() {
         const date = document.querySelector('#due').value;
 
         if (title) {
-            const task = new Task(title, description, date, priority);
-          
+            const task = new Task(title, description, date, priority, projectName);
+
             const project = projectList[projectName];
-            console.log(project);
+
             project.push(task);
 
             tabSwitch();
@@ -35,14 +35,47 @@ export default function addNewTask() {
     });
 }
 
-function renderTask(project) {
+function renderTask(projectArr) {
     const taskList = document.querySelector('#task-list');
     taskList.textContent = '';
-
-    project.forEach((task) => {
+   
+    projectArr.forEach((task, index) => {
         const addedTask = document.createElement('div');
         const titleEle = document.createElement('div');
         const priorityEle = document.createElement('button');
+
+        addedTask.setAttribute('data', index);
+
+        const projectName = projectArr[0].project;
+        
+        addedTask.addEventListener('click', function (e) {
+            const dialog = document.querySelector('#task-modal');
+            const form = document.querySelector('#task-form');
+            const taskIndex = index;
+
+            const titleEl = document.querySelector('#title');
+            const descriptionEl = document.querySelector('#description');
+            const priorityEl = document.querySelector('#set-priority');
+            const projectEl = document.querySelector('#set-project');
+            const dateEl = document.querySelector('#due');
+
+            const task = projectList[projectName][taskIndex];
+   
+
+            const titleText = task.title;
+            const descriptionText = task.description;
+            const priorityText = task.priority;
+            const projectText = task.project;
+            const dateText = task.dueDate;
+
+            titleEl.value = titleText;
+            descriptionEl.value = descriptionText;
+            priorityEl.value = priorityText;
+            projectEl.value = projectText;
+            dateEl.value = dateText;
+
+            dialog.showModal();
+        });
 
         addedTask.style.cssText = 'display: flex; justify-content: space-between; padding: 25px;';
         priorityEle.style.backgroundColor = 'pink';
@@ -55,6 +88,19 @@ function renderTask(project) {
         taskList.appendChild(addedTask);
     });
 }
+
+// function expandTask(event, projectName) {
+//     const dialog = document.querySelector('#task-modal');
+//     const form = document.querySelector('#task-form');
+//     const taskIndex = event.target.data;
+
+//     console.log(taskIndex);
+//     console.log(projectList[projectName]);
+
+//    const titleText = projectList[projectName][taskIndex][title];
+//    console.log(titleText);
+//     dialog.showModal();
+// }
 
 function tabSwitch() {
 
@@ -103,8 +149,8 @@ function addNewProject() {
             option.textContent = newProject.textContent;
             projectDropdown.appendChild(option);
 
-           addToProjectList(name);
-           
+            addToProjectList(name);
+
             form.reset();
             dialog.close();
         }
