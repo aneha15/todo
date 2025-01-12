@@ -1,6 +1,6 @@
 import Task from './task.js';
 import Project from './project.js';
-import { projectList, addToProjectList } from './project.js';
+import { projectList, addProject, removeTask } from './project.js';
 
 export default function addNewTask() {
     addNewProject();
@@ -61,22 +61,26 @@ function renderTask(projectArr) {
     projectArr.forEach((task, index) => {
         const addedTask = document.createElement('div');
         const titleEle = document.createElement('div');
-        const priorityEle = document.createElement('button');
+        const deleteBtn = document.createElement('div');
+      //  const priorityEle = document.createElement('button');
 
-        addedTask.setAttribute('data', index);
+        titleEle.setAttribute('data', index);
 
         const projectName = projectArr[0].project;
 
-        addedTask.addEventListener('click', () => expandTask(projectName, index));
+        titleEle.addEventListener('click', () => expandTask(projectName, index));
+        deleteBtn.addEventListener('click', () => {
+            removeTask(projectName, index);
+            displayTabContent(getCurrentTab());
+    });
 
         addedTask.style.cssText = 'display: flex; justify-content: space-between; padding: 25px;';
-        priorityEle.style.backgroundColor = 'pink';
 
         titleEle.textContent = task.title;
-        priorityEle.textContent = task.priority;
+        deleteBtn.textContent = 'x';
 
         addedTask.appendChild(titleEle);
-        addedTask.appendChild(priorityEle);
+        addedTask.appendChild(deleteBtn);
         taskList.appendChild(addedTask);
     });
 }
@@ -146,8 +150,8 @@ function editTask(event, oldData, taskIndex) {
         // if project edited:
 
         // remove from old project
-        oldProjectArr.splice(taskIndex, 1);
-
+        removeTask(oldData.project, taskIndex);
+  
         // add to new project
         const task = new Task(
             newData.title,
@@ -236,11 +240,11 @@ function addNewProject() {
             option.textContent = newProject.textContent;
             projectDropdown.appendChild(option);
 
-            addToProjectList(name);
+            addProject(name);
 
             form.reset();
             dialog.close();
-            
+
             tabSwitch();
         }
     });

@@ -12,6 +12,10 @@ export const projectList = {
     groceries: [],
 };
 
-export function addToProjectList(name) {
+export function addProject(name) {
     projectList[name] = [];
+}
+
+export function removeTask(project, index) {
+    projectList[project].splice(index, 1);
 }
