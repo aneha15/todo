@@ -1,11 +1,10 @@
 
 export default class Task {
-    constructor(title, description, dueDate, priority, checked=false, project='personal') {
+    constructor(title, description, date, priority, project) {
         this.title = title;
         this.description = description;
-        this.dueDate = dueDate;
+        this.date = date;
         this.priority = priority;
-        this.checked = checked;
         this.project = project;
     }
 
@@ -13,14 +12,15 @@ export default class Task {
         this.priority = priority;
     }
 
-    toggleChecked() {
-        this.checked = this.checked === false ? true : false;
-    }
+    // toggleChecked() {
+    //     this.checked = this.checked === false ? true : false;
+    // }
 
     setProject(project) {
         this.project = project;
     }
 }
+
 
 
 

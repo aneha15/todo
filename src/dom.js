@@ -8,58 +8,46 @@ export default function addNewTask() {
     const dialog = document.querySelector('#task-modal');
     const addTask = document.querySelector('#add-task');
     const submitBtn = document.querySelector('#submit');
+    const editBtn = document.querySelector('#edit');
 
+    const newSubmitBtn = submitBtn.cloneNode(true);
+    editBtn.parentNode.replaceChild(newSubmitBtn, submitBtn);
 
     addTask.addEventListener('click', () => {
-        submitBtn.textContent = 'Submit';
+        newSubmitBtn.style.display = `block`;
+        editBtn.style.display = 'none';
         dialog.showModal();
     });
 
-    submitBtn.addEventListener('click', (event) => {
+    newSubmitBtn.addEventListener('click', (event) => {
         event.preventDefault();
-        const title = document.querySelector('#title').value;
-        const description = document.querySelector('#description').value;
-        const priority = document.querySelector('#set-priority').value;
-        const projectName = document.querySelector('#set-project').value;
-        const date = document.querySelector('#due').value;
 
-        // const titles = [];
-        // Object.keys(projectList).forEach(proj => {
-        //     projectList[proj].forEach(task => {
-        //         titles.push(task.title);
-        //     });
-        // });
+        const newTaskData = {
+            title: document.querySelector('#title').value,
+            description: document.querySelector('#description').value,
+            priority: document.querySelector('#set-priority').value,
+            project: document.querySelector('#set-project').value,
+            date: document.querySelector('#due').value,
+        };
 
-        // console.log(titles);
-
-        //  const addedTask = titles.some((x) => x == title);
-
-        // console.log(addedTask);
 
         if (title) {
-            // if (addedTask) {
-            //     const taskIndex = titles.findIndex((x) => x == title);
-            // console.log(taskIndex);
+            const task = new Task(
+                newTaskData.title,
+                newTaskData.description,
+                newTaskData.date,
+                newTaskData.priority,
+                newTaskData.project
+            );
 
-            // editing task content in task list
-            // projectList[projectName][taskIndex].title = title;
-            // projectList[projectName][taskIndex].description = description;
-            // projectList[projectName][taskIndex].priority = priority;
-            // projectList[projectName][taskIndex].dueDate = date;
-            // projectList[projectName][taskIndex].project = projectName;
+            const projectArr = projectList[newTaskData.project];
 
-            // console.log(projectList[projectName][taskIndex]);
+            projectArr.push(task);
 
-
-            // } else {
-            const task = new Task(title, description, date, priority, projectName);
-
-            const project = projectList[projectName];
-
-            project.push(task);
-            // }
-
+            // update display of current tab
+            displayTabContent(getCurrentTab());
             tabSwitch();
+
             form.reset();
             dialog.close();
         }
@@ -93,45 +81,103 @@ function renderTask(projectArr) {
     });
 }
 
-function expandTask(projectName, index) {
+function expandTask(projectName, taskIndex) {
     const dialog = document.querySelector('#task-modal');
     const form = document.querySelector('#task-form');
-    const editBtn = document.querySelector('#submit');
-    editBtn.textContent = 'Edit task';
+    const editBtn = document.querySelector('#edit');
+    const submitBtn = document.querySelector('#submit');
 
-    const taskIndex = index;
+    // clear previous event listeners
+    const newEditBtn = editBtn.cloneNode(true);
+    editBtn.parentNode.replaceChild(newEditBtn, editBtn);
 
-    const titleEl = document.querySelector('#title');
-    const descriptionEl = document.querySelector('#description');
-    const priorityEl = document.querySelector('#set-priority');
-    const projectEl = document.querySelector('#set-project');
-    const dateEl = document.querySelector('#due');
+    // hide submitBtn
+    submitBtn.style.display = `none`;
+    newEditBtn.style.display = `block`;
+
+    const formFields = {
+        title: document.querySelector('#title'),
+        description: document.querySelector('#description'),
+        priority: document.querySelector('#set-priority'),
+        project: document.querySelector('#set-project'),
+        date: document.querySelector('#due'),
+    };
 
     const task = projectList[projectName][taskIndex];
 
+    const taskData = {
+        title: task.title,
+        description: task.description,
+        priority: task.priority,
+        project: projectName,
+        date: task.date,
+    }
 
-    const titleText = task.title;
-    const descriptionText = task.description;
-    const priorityText = task.priority;
-    const projectText = task.project;
-    const dateText = task.dueDate;
-
-    titleEl.value = titleText;
-    descriptionEl.value = descriptionText;
-    priorityEl.value = priorityText;
-    projectEl.value = projectText;
-    dateEl.value = dateText;
+    // set initial form values
+    Object.keys(formFields).forEach(key => {
+        formFields[key].value = taskData[key];
+    });
 
     dialog.showModal();
-    editBtn.addEventListener('click', () => editTask());
+
+    newEditBtn.addEventListener('click', (e) => {
+        editTask(e, taskData, taskIndex);
+    });
 }
 
-function editTask() {
+function editTask(event, oldData, taskIndex) {
+    event.preventDefault();
+
     const form = document.querySelector('#task-form');
     const dialog = document.querySelector('#task-modal');
-    const addTask = document.querySelector('#add-task');
-    const submitBtn = document.querySelector('#submit');
+
+    // get edited form inputs
+    const newData = {
+        title: document.querySelector('#title').value,
+        description: document.querySelector('#description').value,
+        priority: document.querySelector('#set-priority').value,
+        project: document.querySelector('#set-project').value,
+        date: document.querySelector('#due').value,
+    };
+
+    const oldProjectArr = projectList[oldData.project];
+
+    if (newData.project !== oldData.project) {
+        // if project edited:
+
+        // remove from old project
+        oldProjectArr.splice(taskIndex, 1);
+
+        // add to new project
+        const task = new Task(
+            newData.title,
+            newData.description,
+            newData.date,
+            newData.priority,
+            newData.project
+        );
+
+        const newProjectArr = projectList[newData.project];
+        newProjectArr.push(task);
+
+    } else {
+        const task = oldProjectArr[taskIndex];
+
+        // update task with new info
+        Object.keys(task).forEach(key => {
+            task[key] = newData[key];
+        });
+        console.log(projectList);
+    }
+
+    // update display 
+    displayTabContent(getCurrentTab());
+    tabSwitch();
+
+    form.reset();
+    dialog.close();
 }
+
 
 function tabSwitch() {
 
@@ -139,10 +185,11 @@ function tabSwitch() {
 
         const id = `${key}-tab`;
         const tab = document.getElementById(id);
-
         tab.addEventListener('click', () => displayTabContent(key));
     });
 }
+
+tabSwitch();
 
 function displayTabContent(key) {
     const taskList = document.querySelector('#task-list');
@@ -150,10 +197,14 @@ function displayTabContent(key) {
     heading.textContent = `${key}`;
     renderTask(projectList[key]);
     taskList.insertBefore(heading, taskList.firstChild);
-    // console.log(projectList);
 }
 
 displayTabContent('personal');
+
+function getCurrentTab() {
+    const heading = document.querySelector('h2').textContent;
+    return heading;
+}
 
 function addNewProject() {
     const projectTabs = document.querySelector('#projects');
@@ -191,9 +242,4 @@ function addNewProject() {
             dialog.close();
         }
     });
-
-
-
-
-
 }
