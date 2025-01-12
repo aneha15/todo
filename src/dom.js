@@ -7,6 +7,11 @@ export default function addNewTask() {
     const form = document.querySelector('#task-form');
     const dialog = document.querySelector('#task-modal');
     const addTask = document.querySelector('#add-task');
+
+    // set default date to current day
+    const dateInput = document.querySelector('#due');
+    dateInput.valueAsDate = new Date();
+
     const submitBtn = document.querySelector('#submit');
     const editBtn = document.querySelector('#edit');
 
@@ -31,7 +36,7 @@ export default function addNewTask() {
         };
 
 
-        if (title) {
+        if (newTaskData.title) {
             const task = new Task(
                 newTaskData.title,
                 newTaskData.description,
