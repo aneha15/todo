@@ -240,6 +240,8 @@ function addNewProject() {
 
             form.reset();
             dialog.close();
+            
+            tabSwitch();
         }
     });
 }

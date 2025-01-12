@@ -14,5 +14,4 @@ export const projectList = {
 
 export function addToProjectList(name) {
     projectList[name] = [];
-    // console.log(projectList);
 }
