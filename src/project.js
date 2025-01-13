@@ -124,7 +124,8 @@ export function addProject(list, name) {
 }
 
 export function removeProject(list, name) {
-    delete list.name;
+    delete list[name];
+    console.log(list);
 } 
 
 export function removeTask(list, project, index) {

@@ -138,6 +138,7 @@ function expandTask(projectName, taskIndex) {
         formFields[key].value = taskData[key];
     });
 
+    createProjectDropdown();
     dialog.showModal();
 
     newEditBtn.addEventListener('click', (e) => {
@@ -255,9 +256,29 @@ export function displayTabBar() {
 
     Object.keys(projectList).forEach(key => {
         const child = document.createElement('li');
-        child.textContent = key;
-        child.id = `${key}-tab`;
-        child.addEventListener('click', () => displayTabContent(key));
+        const tab = document.createElement('div');
+        const deleteBtn = document.createElement('div');
+        
+        child.style.cssText = 'display: flex; flex-direction: row; justify-content: space-between;';
+
+        tab.textContent = key;
+        deleteBtn.textContent = 'x';
+        tab.id = `${key}-tab`;
+
+        tab.addEventListener('click', () => displayTabContent(key));
+        deleteBtn.addEventListener('click', () => {
+            const del = confirm("Are you sure you want to remove this project & all its todos?");
+            if(del) {
+                removeProject(projectList, key);
+                saveUpdatedProjectList();
+                createProjectDropdown();
+                displayTabContent(Object.keys(getProjectList())[0]);
+                displayTabBar();
+            } 
+        });
+
+        child.appendChild(tab);
+        child.appendChild(deleteBtn);
         parent.appendChild(child);
     });
 }
