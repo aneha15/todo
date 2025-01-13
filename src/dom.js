@@ -1,16 +1,15 @@
 import Task from './task.js';
 import Project from './project.js';
-import { projectList, addProject, removeTask } from './project.js';
+import { getProjectList, addProject, removeProject, removeTask } from './project.js';
 
-export default function addNewTask() {
-    addNewProject();
+localStorage.clear();
+
+const projectList = getProjectList();
+
+export function addNewTask() {
     const form = document.querySelector('#task-form');
     const dialog = document.querySelector('#task-modal');
     const addTask = document.querySelector('#add-task');
-
-    // set default date to current day
-    const dateInput = document.querySelector('#due');
-    dateInput.valueAsDate = new Date();
 
     const submitBtn = document.querySelector('#submit');
     const editBtn = document.querySelector('#edit');
@@ -21,6 +20,13 @@ export default function addNewTask() {
     addTask.addEventListener('click', () => {
         newSubmitBtn.style.display = `block`;
         editBtn.style.display = 'none';
+
+        // set default date to current day
+        const dateInput = document.querySelector('#due');
+        dateInput.valueAsDate = new Date();
+
+        createProjectDropdown();
+
         dialog.showModal();
     });
 
@@ -49,9 +55,10 @@ export default function addNewTask() {
 
             projectArr.push(task);
 
+            saveUpdatedProjectList();
+
             // update display of current tab
             displayTabContent(getCurrentTab());
-            tabSwitch();
 
             form.reset();
             dialog.close();
@@ -67,7 +74,6 @@ function renderTask(projectArr) {
         const addedTask = document.createElement('div');
         const titleEle = document.createElement('div');
         const deleteBtn = document.createElement('div');
-      //  const priorityEle = document.createElement('button');
 
         titleEle.setAttribute('data', index);
 
@@ -75,14 +81,19 @@ function renderTask(projectArr) {
 
         titleEle.addEventListener('click', () => expandTask(projectName, index));
         deleteBtn.addEventListener('click', () => {
-            removeTask(projectName, index);
+            removeTask(projectList, projectName, index);
+
+            saveUpdatedProjectList();
+
             displayTabContent(getCurrentTab());
-    });
+        });
 
         addedTask.style.cssText = 'display: flex; justify-content: space-between; padding: 25px;';
 
         titleEle.textContent = task.title;
         deleteBtn.textContent = 'x';
+
+        // console.log(JSON.parse(localStorage.getItem("projectList")));
 
         addedTask.appendChild(titleEle);
         addedTask.appendChild(deleteBtn);
@@ -152,11 +163,10 @@ function editTask(event, oldData, taskIndex) {
     const oldProjectArr = projectList[oldData.project];
 
     if (newData.project !== oldData.project) {
-        // if project edited:
 
         // remove from old project
-        removeTask(oldData.project, taskIndex);
-  
+        removeTask(projectList, oldData.project, taskIndex);
+
         // add to new project
         const task = new Task(
             newData.title,
@@ -176,31 +186,23 @@ function editTask(event, oldData, taskIndex) {
         Object.keys(task).forEach(key => {
             task[key] = newData[key];
         });
-        console.log(projectList);
     }
+
+    saveUpdatedProjectList();
 
     // update display 
     displayTabContent(getCurrentTab());
-    tabSwitch();
 
     form.reset();
     dialog.close();
 }
 
-
-function tabSwitch() {
-
-    Object.keys(projectList).forEach(key => {
-
-        const id = `${key}-tab`;
-        const tab = document.getElementById(id);
-        tab.addEventListener('click', () => displayTabContent(key));
-    });
+function saveUpdatedProjectList() {
+    localStorage.clear();
+    localStorage.setItem('projectList', JSON.stringify(projectList));
 }
 
-tabSwitch();
-
-function displayTabContent(key) {
+export function displayTabContent(key) {
     const taskList = document.querySelector('#task-list');
     const heading = document.createElement('h2');
     heading.textContent = `${key}`;
@@ -208,21 +210,17 @@ function displayTabContent(key) {
     taskList.insertBefore(heading, taskList.firstChild);
 }
 
-displayTabContent('personal');
-
 function getCurrentTab() {
     const heading = document.querySelector('h2').textContent;
     return heading;
 }
 
-function addNewProject() {
-    const projectTabs = document.querySelector('#projects');
+export function addNewProject() {
     const addBtn = document.querySelector('#add-project');
     const dialog = document.querySelector('#project-modal');
     const wrapper = document.querySelector('#project-modal-wrapper');
     const form = document.querySelector('#project-form');
     const enterBtn = document.querySelector('#enter');
-    const projectDropdown = document.querySelector('#set-project');
 
     addBtn.addEventListener('click', () => {
         dialog.style.left = wrapper.offsetLeft + 'px';
@@ -235,22 +233,43 @@ function addNewProject() {
         const name = document.querySelector('#new-project').value;
 
         if (name) {
-            const newProject = document.createElement('li');
-            newProject.id = `${name}-tab`;
-            newProject.textContent = String(name).charAt(0).toUpperCase() + String(name).slice(1);
-            projectTabs.insertBefore(newProject, addBtn);
+            // update projectList
+            addProject(projectList, name);
+            saveUpdatedProjectList();
 
-            const option = document.createElement('option');
-            option.value = name;
-            option.textContent = newProject.textContent;
-            projectDropdown.appendChild(option);
+            // update form project dropdown
+            createProjectDropdown();
 
-            addProject(name);
+            // update tab bar
+            displayTabBar();
 
             form.reset();
             dialog.close();
-
-            tabSwitch();
         }
+    });
+}
+
+export function displayTabBar() {
+    const parent = document.querySelector('#project-list');
+    parent.textContent = '';
+
+    Object.keys(projectList).forEach(key => {
+        const child = document.createElement('li');
+        child.textContent = key;
+        child.id = `${key}-tab`;
+        child.addEventListener('click', () => displayTabContent(key));
+        parent.appendChild(child);
+    });
+}
+
+function createProjectDropdown() {
+    const project = document.querySelector('#set-project');
+    project.textContent = '';
+
+    Object.keys(projectList).forEach(key => {
+        const option = document.createElement('option');
+        option.value = key;
+        option.textContent = key;
+        project.appendChild(option);
     });
 }

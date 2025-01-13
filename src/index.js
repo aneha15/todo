@@ -1,8 +1,9 @@
 import "./style.css";
-import Task from './task.js';
-import Project from './project.js';
-import addNewTask from "./dom.js";
+import { getProjectList } from './project.js';
+import { addNewTask, addNewProject, displayTabBar, displayTabContent } from "./dom.js";
 
-
-
- addNewTask();
+displayTabBar();
+displayTabContent(Object.keys(getProjectList())[0]);
+addNewTask();
+addNewProject();
+// tabSwitch();

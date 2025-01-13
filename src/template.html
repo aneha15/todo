@@ -16,13 +16,10 @@
             <li>Sticky Notes</li>
         </ul>
 
-        <ul id="projects">
+        <div id="projects">
             <h3>PROJECTS</h3>
-            <li id="personal-tab">Personal</li>
-            <li id="work-tab">Work</li>
-            <li id="groceries-tab">Groceries</li>
+            <ul id="project-list"></ul>
             <button id="add-project">+ Add new project</button>
-
             <div id="project-modal-wrapper">
                 <dialog id="project-modal">
                     <form id="project-form" action="">
@@ -33,8 +30,9 @@
                     </form>
                 </dialog>
             </div>
-        </ul>
+        </div>
     </div>
+
     <div id="taskpage">
         <button id="add-task">Add New Task</button>
         <div id="task-list"></div>
@@ -60,17 +58,15 @@
 
             <div>Project</div>
             <select name="project" id="set-project">
-                <option value="personal">Personal</option>
+                <!-- <option value="personal">Personal</option>
                 <option value="work">Work</option>
-                <option value="groceries">Groceries</option>
+                <option value="groceries">Groceries</option> -->
             </select>
             <button value="cancel" formmethod="dialog" formnovalidate>Cancel</button>
             <button id="submit">Submit</button>
             <button id="edit">Edit task</button>
         </form>
     </dialog>
-
-
 </body>
 
 </html>
