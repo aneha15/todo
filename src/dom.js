@@ -297,29 +297,39 @@ function createProjectDropdown() {
 }
 
 function dateSorted() {
-    const dateSortedTaskList = {
+    const dateSortedList = {
         today: [],
         tomorrow: [],
         upcoming: [],
     };
 
-    const today = dateSortedTaskList['today'];
-    const tomorrow = dateSortedTaskList['tomorrow'];
-    const upcoming = dateSortedTaskList['upcoming'];
+    const sortMethods = {
+        today: isToday,
+        tomorrow: isTomorrow,
+        upcoming: isFuture,
+    };
 
-    Object.keys(projectList).forEach(key => {
-        projectList[key].forEach(task => {
-            if (isToday(task.date)) {
-                today.push(task);
-            }
-            if (isTomorrow(task.date)) {
-                tomorrow.push(task);
-            }
-            if (isFuture(task.date)) {
-                upcoming.push(task);
+    const tasks = Object.values(projectList).flat();
+
+    tasks.forEach(task => {
+        Object.entries(sortMethods).forEach(([method, func]) => {
+            if(func(task.date)) {
+                dateSortedList[method].push(task);
             }
         });
     });
+
+    return dateSortedList;
+}
+
+function renderDateSortedList() {
+    const today = document.querySelector('#today');
+    const tomorrow = document.querySelector('#tomorrow');
+    const upcoming = document.querySelector('#upcoming');
+
+    today.addEventListener('click', displayTabContent(dateSorted(), 'today'));
+    tomorrow.addEventListener('click', displayTabContent(dateSorted(), 'tomorrow'));
+    upcoming.addEventListener('click', displayTabContent(dateSorted(), 'upcoming'));
 }
 // displayTabContent(dateSortedTaskList, method);
-dateSorted();
+// dateSorted();
