@@ -1,5 +1,6 @@
 import Task from './task.js';
 import Project from './project.js';
+import { isToday, isTomorrow, isFuture } from "date-fns";
 import { getProjectList, addProject, removeProject, removeTask } from './project.js';
 
 localStorage.clear();
@@ -58,7 +59,7 @@ export function addNewTask() {
             saveUpdatedProjectList();
 
             // update display of current tab
-            displayTabContent(getCurrentTab());
+            displayTabContent(projectList, getCurrentTab());
 
             form.reset();
             dialog.close();
@@ -66,7 +67,7 @@ export function addNewTask() {
     });
 }
 
-function renderTask(projectArr) {
+function renderTask(list, projectArr) {
     const taskList = document.querySelector('#task-list');
     taskList.textContent = '';
 
@@ -85,7 +86,7 @@ function renderTask(projectArr) {
 
             saveUpdatedProjectList();
 
-            displayTabContent(getCurrentTab());
+            displayTabContent(list, getCurrentTab());
         });
 
         addedTask.style.cssText = 'display: flex; justify-content: space-between; padding: 25px;';
@@ -192,7 +193,7 @@ function editTask(event, oldData, taskIndex) {
     saveUpdatedProjectList();
 
     // update display 
-    displayTabContent(getCurrentTab());
+    displayTabContent(projectLsit, getCurrentTab());
 
     form.reset();
     dialog.close();
@@ -203,11 +204,11 @@ function saveUpdatedProjectList() {
     localStorage.setItem('projectList', JSON.stringify(projectList));
 }
 
-export function displayTabContent(key) {
+export function displayTabContent(list, key) {
     const taskList = document.querySelector('#task-list');
     const heading = document.createElement('h2');
     heading.textContent = `${key}`;
-    renderTask(projectList[key]);
+    renderTask(list, list[key]);
     taskList.insertBefore(heading, taskList.firstChild);
 }
 
@@ -258,23 +259,23 @@ export function displayTabBar() {
         const child = document.createElement('li');
         const tab = document.createElement('div');
         const deleteBtn = document.createElement('div');
-        
+
         child.style.cssText = 'display: flex; flex-direction: row; justify-content: space-between;';
 
         tab.textContent = key;
         deleteBtn.textContent = 'x';
         tab.id = `${key}-tab`;
 
-        tab.addEventListener('click', () => displayTabContent(key));
+        tab.addEventListener('click', () => displayTabContent(projectList, key));
         deleteBtn.addEventListener('click', () => {
             const del = confirm("Are you sure you want to remove this project & all its todos?");
-            if(del) {
+            if (del) {
                 removeProject(projectList, key);
                 saveUpdatedProjectList();
                 createProjectDropdown();
-                displayTabContent(Object.keys(getProjectList())[0]);
+                displayTabContent(projectList, Object.keys(getProjectList())[0]);
                 displayTabBar();
-            } 
+            }
         });
 
         child.appendChild(tab);
@@ -294,3 +295,31 @@ function createProjectDropdown() {
         project.appendChild(option);
     });
 }
+
+function dateSorted() {
+    const dateSortedTaskList = {
+        today: [],
+        tomorrow: [],
+        upcoming: [],
+    };
+
+    const today = dateSortedTaskList['today'];
+    const tomorrow = dateSortedTaskList['tomorrow'];
+    const upcoming = dateSortedTaskList['upcoming'];
+
+    Object.keys(projectList).forEach(key => {
+        projectList[key].forEach(task => {
+            if (isToday(task.date)) {
+                today.push(task);
+            }
+            if (isTomorrow(task.date)) {
+                tomorrow.push(task);
+            }
+            if (isFuture(task.date)) {
+                upcoming.push(task);
+            }
+        });
+    });
+}
+// displayTabContent(dateSortedTaskList, method);
+dateSorted();
